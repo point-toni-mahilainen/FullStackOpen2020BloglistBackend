@@ -90,12 +90,12 @@ const mostLikes = (blogs) => {
     // })
     // console.log(array2);
     const mostLikes = Object.entries(blogs).reduce((prev, current) => {
-        console.log('prev', prev.author);
-        console.log('current[1].author', current[1].author);
+        // console.log('prev', prev.author);
+        // console.log('current[1].author', current[1].author);
         return prev.author === current[1].author ?
             ({ ...prev, author: prev.author, likes: prev.likes + current[1].likes }) : ({ ...prev, author: current[1].author, likes: current[1].likes })
     }, { author: '', likes: 0 })
-    console.log(mostLikes);
+    // console.log(mostLikes);
 
     // const mostBlogs = Object.entries(blogCounts).reduce((prev, current) =>
     //     blogCounts[prev] > blogCounts[current] ?
