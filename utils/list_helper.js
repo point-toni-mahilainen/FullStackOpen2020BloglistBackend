@@ -1,4 +1,4 @@
-const blogsRouter = require("../controllers/blogs")
+const _ = require('lodash')
 
 const dummy = (blogs) => 1
 
@@ -18,21 +18,28 @@ const favoriteBlog = (blogs) => {
     return favoriteBlog
 }
 
+const mostBlogs = (blogs) => {
+    const blogCounts = blogs.reduce((acc, value) => (
+        {
+            ...acc,
+            [value.author]: (acc[value.author] || 0) + 1
+        }
+    ), {})
+
+    const mostBlogs = Object.entries(blogCounts).reduce((prev, current) =>
+        blogCounts[prev] > blogCounts[current] ?
+            { author: prev[0], blogs: prev[1] } : { author: current[0], blogs: current[1] })
+
+    return mostBlogs
+}
+
 const blogs = [
     {
-        _id: "5a422a851b54a676234d17f6",
+        _id: "5a422a851b54a676234d17f7",
         title: "React patterns",
         author: "Michael Chan",
         url: "https://reactpatterns.com/",
         likes: 7,
-        __v: 0
-    },
-    {
-        _id: "5a422a851b54a676234d17f7",
-        title: "JavaScript functions",
-        author: "Anders Stevesson",
-        url: "https://blog.javascriptfunctions.com/",
-        likes: 9,
         __v: 0
     },
     {
@@ -77,24 +84,31 @@ const blogs = [
     }
 ]
 
-const mostBlogs = (blogs) => {
-    const counts = blogs.reduce((acc, value) => (
-        {
-            ...acc, 
-            [value.author]: (acc[value.author] || 0) + 1
-        }
-    ), {});
-    // const counts = blogs.reduce((acc, blog) => {
-    //     console.log(acc);
-    //     console.log(blog);
-    // }, {})
-    console.log(counts);
+const mostLikes = (blogs) => {
+    // const array2 = blogs.map(blog => {
+    //     return { author: blog.author, likes: blog.likes }
+    // })
+    // console.log(array2);
+    const mostLikes = Object.entries(blogs).reduce((prev, current) => {
+        console.log('prev', prev.author);
+        console.log('current[1].author', current[1].author);
+        return prev.author === current[1].author ?
+            ({ ...prev, author: prev.author, likes: prev.likes + current[1].likes }) : ({ ...prev, author: current[1].author, likes: current[1].likes })
+    }, { author: '', likes: 0 })
+    console.log(mostLikes);
+
+    // const mostBlogs = Object.entries(blogCounts).reduce((prev, current) =>
+    //     blogCounts[prev] > blogCounts[current] ?
+    //         { author: prev[0], blogs: prev[1] } : { author: current[0], blogs: current[1] })
+
+    // console.log(mostBlogs)
 }
 
-mostBlogs(blogs)
+mostLikes(blogs)
 
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 }

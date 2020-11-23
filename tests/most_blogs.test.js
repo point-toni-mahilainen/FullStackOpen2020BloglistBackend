@@ -52,15 +52,11 @@ describe('most active blogger', () => {
         }
     ]
 
-    test('get the most voted blog', () => {
-        const result = listHelper.favoriteBlog(blogs)
+    test('get the most active blogger and count of the blogs', () => {
+        const result = listHelper.mostBlogs(blogs)
         expect(result).toEqual({
-            _id: "5a422b3a1b54a676234d17f9",
-            title: "Canonical string reduction",
-            author: "Edsger W. Dijkstra",
-            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-            likes: 12,
-            __v: 0
+            author: 'Robert C. Martin',
+            blogs: 3
         })
     })
 })
