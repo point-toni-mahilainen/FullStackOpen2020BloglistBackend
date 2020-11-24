@@ -42,7 +42,6 @@ blogsRouter.put('/:id', (request, response, next) => {
 
     Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
         .then(updatedBlog => {
-            console.log(response);
             response.json(updatedBlog.toJSON())
         })
         .catch(error => next(error))
