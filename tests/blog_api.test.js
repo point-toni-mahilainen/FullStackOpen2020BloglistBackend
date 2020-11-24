@@ -85,7 +85,7 @@ describe('blog API', () => {
             title: "Async/Await explained",
             author: "George Hamilton",
             url: "https://blog.asyncronius.com/",
-            likes: 70,
+            likes: 70
         }
 
         await api.post('/api/blogs')
@@ -95,8 +95,41 @@ describe('blog API', () => {
 
         const blogs = await Blog.find({})
         expect(blogs).toHaveLength(initialBlogs.length + 1)
+
+        const titles = notesAtEnd.map(blog => blog.title)
+        expect(titles).toContain(
+            'Async/Await explained'
+        )
     });
 
+    test('if likes-field is not exists, the value is set to 0', async () => {
+        let newBlog = {
+            title: "Async/Await explained",
+            author: "George Hamilton",
+            url: "https://blog.asyncronius.com/"
+        }
+
+        await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+
+        const blogs = await Blog.find({})
+        expect(blogs).toHaveLength(initialBlogs.length + 1)
+    });
+
+    test('if the all content is not defined', async () => {
+        let newBlog = {
+            author: "George Hamilton",
+            likes: 20
+        }
+
+        await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+
+        const blogs = await Blog.find({})
+        expect(blogs).toHaveLength(initialBlogs.length)
+    });
 
     afterAll(() => {
         mongoose.connection.close()
