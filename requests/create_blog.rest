@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "The blog 6",
-    "author": "Ossi Mäkilä",
-    "url": "https://blog.theblog6.com",
+    "title": "The blog 9",
+    "author": "Petri Mäkilä",
+    "url": "https://blog.theblog9.com",
     "likes": 20000
 }

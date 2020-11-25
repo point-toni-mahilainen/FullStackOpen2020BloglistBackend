@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const Blog = require('../models/blog')
 const api = supertest(app)
+const Blog = require('../models/blog')
 const helper = require('./test_helpers')
 
 describe('get blogs when database has some initial data', () => {

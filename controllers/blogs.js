@@ -1,18 +1,17 @@
 const blogsRouter = require('express').Router()
-const { update } = require('../models/blog')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const logger = require('../utils/logger')
 
-blogsRouter.get('/', (request, response, next) => {
-    Blog.find({})
-        .then(blogs => {
-            response.json(blogs)
-        })
-        .catch(error => next(error))
+blogsRouter.get('/', async (request, response) => {
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+    response.json(blogs)
 })
 
-blogsRouter.post('/', (request, response, next) => {
+blogsRouter.post('/', async (request, response) => {
     let body = request.body
+
+    const users = await User.find({})
 
     if (!body.likes) {
         body = {
@@ -21,16 +20,21 @@ blogsRouter.post('/', (request, response, next) => {
         }
     }
 
-    let blog = new Blog(body)
+    let blog = new Blog({
+        title: "The blog 7",
+        author: "Kalle Mäkilä",
+        user: users[0],
+        url: "https://blog.theblog7.com",
+        likes: 20000
+    })
 
-    blog.save()
-        .then(result => {
-            response.status(201).json(result)
-        })
-        .catch(error => next(error))
+    const savedBlog = await blog.save()
+    users[0].blogs = users[0].blogs.concat(savedBlog._id)
+    await users[0].save()
+    response.status(201).json(savedBlog)
 })
 
-blogsRouter.put('/:id', (request, response, next) => {
+blogsRouter.put('/:id', async (request, response) => {
     let body = request.body
 
     const blog = {
@@ -40,11 +44,8 @@ blogsRouter.put('/:id', (request, response, next) => {
         likes: body.likes
     }
 
-    Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-        .then(updatedBlog => {
-            response.json(updatedBlog.toJSON())
-        })
-        .catch(error => next(error))
+    const updatedBlog = Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    response.json(updatedBlog.toJSON())
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
