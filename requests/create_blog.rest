@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbmltYSIsImlkIjoiNWZiZTJlNjEwMTc2Zjc1YjAwNGI5NWY0IiwiaWF0IjoxNjA2MzIwNDEyfQ.Bav4PqnL5Qx9nzPiiQRozRTc1UaxEPT3FYjJuHidxxQ
 
 {
-    "title": "The blog 9",
-    "author": "Petri Mäkilä",
-    "url": "https://blog.theblog9.com",
+    "title": "The blog 10",
+    "author": "Toni Mahilainen",
+    "url": "https://blog.theblog10.com",
     "likes": 20000
 }
