@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const bcrypt = require('bcrypt')
 const helper = require('./test_helpers')
 const User = require('../models/user')
 const app = require('../app')
@@ -9,11 +8,7 @@ const api = supertest(app)
 describe('the user creation', () => {
     beforeEach(async () => {
         await User.deleteMany({})
-
-        const passwordHash = await bcrypt.hash('sekret', 10)
-        const user = new User({ username: 'root', passwordHash })
-
-        await user.save()
+        await helper.initialUsersToDb()
     })
 
     test('the user can not be created with too short password', async () => {

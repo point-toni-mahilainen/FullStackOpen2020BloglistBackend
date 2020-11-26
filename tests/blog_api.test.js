@@ -3,12 +3,15 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helpers')
 
 describe('get blogs when database has some initial data', () => {
     beforeEach(async () => {
         await Blog.deleteMany({})
+        await User.deleteMany({})
         await Blog.insertMany(helper.initialBlogs)
+        await helper.initialUsersToDb()
     })
 
     test('blogs are returned as json', async () => {
@@ -25,6 +28,14 @@ describe('get blogs when database has some initial data', () => {
 
     describe('add a new blog', () => {
         test('a blog can be added with valid content', async () => {
+            const user = {
+                username: 'admin',
+                password: 'sekret2'
+            }
+
+            const response = await api.post('/api/login')
+                .send(user)
+
             const newBlog = {
                 title: "Async/Await explained",
                 author: "George Hamilton",
@@ -34,6 +45,7 @@ describe('get blogs when database has some initial data', () => {
 
             await api.post('/api/blogs')
                 .send(newBlog)
+                .set({ Authorization: `bearer ${response.body.token}` })
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
 
@@ -121,6 +133,26 @@ describe('get blogs when database has some initial data', () => {
                         expect(blogs).toHaveLength(helper.initialBlogs.length)
                     });
 
+                    test('a blog can not be added if token is missing', async () => {
+                        const newBlog = {
+                            title: "Async/Await explained",
+                            author: "George Hamilton",
+                            url: "https://blog.asyncronius.com/",
+                            likes: 70
+                        }
+            
+                        await api.post('/api/blogs')
+                            .send(newBlog)
+                            .expect(401)
+            
+                        const blogs = await helper.blogsInDb()
+                        expect(blogs).toHaveLength(helper.initialBlogs.length)
+            
+                        const titles = blogs.map(blog => blog.title)
+                        expect(titles).not.toContain(
+                            'Async/Await explained'
+                        )
+                    });
                 });
             });
         });
